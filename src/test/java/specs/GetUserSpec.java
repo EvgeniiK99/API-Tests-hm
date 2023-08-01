@@ -10,16 +10,21 @@ import static io.restassured.filter.log.LogDetail.STATUS;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
-public class LoginSpec {
-    public static RequestSpecification loginRequestSpec = with()
+public class GetUserSpec {
+    public static RequestSpecification getUserRequestSpec = with()
             .log().uri()
             .log().method()
             .log().body()
             .contentType(JSON);
-    public static ResponseSpecification loginResponseSpecStatusCodeIs200 = new ResponseSpecBuilder()
+    public static ResponseSpecification getUserResponseSpecStatusCodeIs200 = new ResponseSpecBuilder()
             .log(STATUS)
             .log(BODY)
             .expectStatusCode(200)
-            .expectBody(matchesJsonSchemaInClasspath("success-login-response-schema.json"))
+            .expectBody(matchesJsonSchemaInClasspath("success-get-user-response-schema.json"))
+            .build();
+    public static ResponseSpecification getUserResponseSpecStatusCodeIs404 = new ResponseSpecBuilder()
+            .log(STATUS)
+            .log(BODY)
+            .expectStatusCode(404)
             .build();
 }
