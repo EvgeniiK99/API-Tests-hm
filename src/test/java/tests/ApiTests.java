@@ -1,31 +1,33 @@
 package tests;
 
+import models.LoginBodyModel;
+import models.LoginResponseModel;
 import org.junit.jupiter.api.Test;
 
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static specs.LoginSpec.loginRequestSpec;
+import static specs.LoginSpec.loginResponseSpecStatusCodeIs200;
 
 public class ApiTests extends TestBase {
     @Test
     void loginTest() {
-        String requestBody = """
-                {
-                    "email": "eve.holt@reqres.in",
-                    "password": "cityslicka"
-                }"""; //BAD PRACTICE
+        LoginBodyModel reqBody = new LoginBodyModel();
+        reqBody.setEmail("eve.holt@reqres.in");
+        reqBody.setPassword("cityslicka");
 
-        given()
-                .log().method()
-                .log().uri()
-                .contentType(JSON)
-                .body(requestBody)
+        LoginResponseModel loginResponse = step("Login request", ()->
+        given(loginRequestSpec)
+                .body(reqBody)
                 .when()
                 .post("/login")
                 .then()
-                .log().body()
-                .statusCode(200)
-                .body("token", notNullValue());
+                .spec(loginResponseSpecStatusCodeIs200)
+                .extract().as(LoginResponseModel.class));
+        step("Check token is not null", ()-> assertNotNull(loginResponse.getToken()));
     }
 
     @Test
