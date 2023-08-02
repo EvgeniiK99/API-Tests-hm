@@ -3,7 +3,7 @@ package models;
 import lombok.Data;
 
 @Data
-public class UserData {
+public class GetUserDataResponseModel {
     GetUserResponseModel data;
     Object support;
 }

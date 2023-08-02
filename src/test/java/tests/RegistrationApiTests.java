@@ -37,7 +37,7 @@ public class RegistrationApiTests extends TestBase {
         regData.setEmail(null);
         regData.setPassword("pistol");
 
-        UnsuccessfulRegistrationResponseModel missingPasswordResponse = step("Registration request", () ->
+        UnsuccessfulRegistrationResponseModel missingPasswordResponse = step("Registration request - 400 Missing email or username", () ->
                 given(registrationRequestSpec)
                         .body(regData)
                         .when()
@@ -45,14 +45,14 @@ public class RegistrationApiTests extends TestBase {
                         .then()
                         .spec(registrationResponseSpecStatusIs400)
                         .extract().as(UnsuccessfulRegistrationResponseModel.class));
-        step("Check message in error", ()-> assertEquals("Missing email or password", missingPasswordResponse.getError()));
+        step("Check message in error", ()-> assertEquals("Missing email or username", missingPasswordResponse.getError()));
     }
     @Test
     void missingPasswordRegistrationTest() {
         RegistrationBodyModel regData = new RegistrationBodyModel();
         regData.setEmail("sydney@fife");
 
-        UnsuccessfulRegistrationResponseModel missingPasswordResponse = step("Registration request", () ->
+        UnsuccessfulRegistrationResponseModel missingPasswordResponse = step("Registration request - 400 Missing password", () ->
                 given(registrationRequestSpec)
                         .body(regData)
                         .when()
@@ -65,10 +65,11 @@ public class RegistrationApiTests extends TestBase {
 
     @Test
     void unsupportedMediaTypeRegistrationTest() {
-        given()
+        step("Registration request - 415 Unsupported Media Type", ()->
+        given(registrationRequestWithoutBodySpec)
                 .when()
                 .post("/register")
                 .then()
-                .spec(registrationResponseSpecStatusIs415);
+                .spec(registrationResponseSpecStatusIs415));
     }
 }

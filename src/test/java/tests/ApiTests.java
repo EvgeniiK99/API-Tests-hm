@@ -37,14 +37,14 @@ public class ApiTests extends TestBase {
     @Test
     void getUserTest() {
         Integer userId = 2;
-        UserData getUserResponse = step("Get User request", () ->
+        GetUserDataResponseModel getUserResponse = step("Get User request", () ->
                         given(getUserRequestSpec)
                                 .param("page", 1)
                                 .when()
                                 .get(format("/users/%s", userId))
                                 .then()
                                 .spec(getUserResponseSpecStatusCodeIs200)
-                                .extract().as(UserData.class));
+                                .extract().as(GetUserDataResponseModel.class));
         step("Check id", () -> assertEquals(userId, getUserResponse.getData().getId()));
     }
 
